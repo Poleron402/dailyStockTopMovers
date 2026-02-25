@@ -47,7 +47,7 @@ def lambda_handler(event, context):
                     "percent_change": diff,
                     "closing_price": data["close"]
                 }
-            # Adding sleep for 10 seconds to bypass free api tier limitation
+            # Adding sleep for 11 seconds to bypass free api tier limitation
             time.sleep(11)
         except requests.exceptions.HTTPError as e:
             print(f"HTTP error: {e}")

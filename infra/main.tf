@@ -35,6 +35,25 @@ resource "aws_iam_role" "iamrole" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+# Scheduling
+resource "aws_cloudwatch_event_rule" "get_daily_stock" {
+  name = "get_daily_stock"
+  description = "Triggers the lambda function every day besides SUN and MON for the past day to get the stock data. API limitations do not permit same day data retrieval, therefore the date is shifted."
+  schedule_expression = "cron(5 0 ? * TUE-SAT *)"
+}
+resource "aws_cloudwatch_event_target" "lambda_target" {
+  rule      = aws_cloudwatch_event_rule.get_daily_stock.name
+  target_id = "SendToLambda"
+  arn       = aws_lambda_function.massive_api_lambda.arn
+}
+resource "aws_lambda_permission" "allow_eventbridge" {
+  statement_id  = "AllowExecutionFromEventBridge"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.massive_api_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.get_daily_stock.arn
+}
+
 resource "aws_iam_policy" "dynamoDBLambdaPolicy" {
   name = "DynamoDBLambdaPolicy"
 
@@ -82,5 +101,3 @@ resource "aws_lambda_function" "massive_api_lambda" {
     }
   }
 }
-
-# 
