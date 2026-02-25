@@ -1,55 +1,40 @@
-# The script that fetches the data for requested stocks - "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA" and "NVDA"
-# this will be triggered by the cron job in aws
-
-import requests
+import boto3
 from datetime import date, timedelta
-from dotenv import load_dotenv
-import os
 import json
 from decimal import Decimal
-import time
-import boto3
+
+def handler():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-1')
+    table = dynamodb.Table('StockData')
+
+    get_days = 0
 
 
-# Loading api key from the .env - DEV
-# load_dotenv()
-api_key = os.environ.get("API_KEY1")
+    return_date = []
+    while len(return_date)<7:
+        try:
+            today = str(date.today()-timedelta(days=get_days))
+            db_response = table.get_item(
+                Key={"date": today,
+                        }
+                )
+            get_days += 1
+        except Exception as e:
+            print("No entry for the date exists")
+            continue
 
-# needed tickers
-watchlist = ["AAPL","MSFT","GOOGL","AMZN","TSLA","NVDA"]
+        
+        if "Item" in db_response:
+            for key, value in db_response["Item"].items():
+                if isinstance(value, Decimal):
+                    db_response["Item"][key] = float(value)
+            return_date.append(db_response["Item"])
 
-# today's date
-today = str(date.today()- timedelta(days=4))
-
-# to check the winner
-highest_change = 0
-
-# Data to store: Date, Ticker Symbol, Percent Change, and Closing Price.
-winner = {}
-
-for stock in watchlist:
-    response = requests.get(f"https://api.massive.com/v1/open-close/{stock}/{today}?adjusted=true&apiKey={api_key}")
-    print(f"https://api.massive.com/v1/open-close/{stock}/{today}?adjusted=true&apiKey={api_key}")
-    data = response.json()
-
-    diff = 100*((data["close"]-data["open"])/data["open"])
-    if abs(diff)>highest_change:
-        highest_change = abs(diff)
-        winner = {
-            "date": today,
-            "ticker": stock,
-            "percent_change": diff,
-            "closing_price": data["close"]
-        }
-    # Adding sleep for 11 seconds to bypass free api tier limitation
-    time.sleep(11)
-
-winner = json.loads(json.dumps(winner), parse_float=Decimal)
-# dynamo db connection
-dynamodb = boto3.resource('dynamodb', region_name='us-west-1')
-table = dynamodb.Table('StockData')
-
-db_response = table.put_item(
-    Item=winner
-)
-print(db_response)
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
+        "body": json.dumps(return_date)
+    }
