@@ -3,7 +3,7 @@ from datetime import date, timedelta
 import json
 from decimal import Decimal
 
-def handler():
+def handler(event, context):
     dynamodb = boto3.resource('dynamodb', region_name='us-west-1')
     table = dynamodb.Table('StockData')
 
