@@ -2,7 +2,7 @@
 venv/
 lambda.zip
 lambda-one.zip
-lambda/*
+*/lambda/
 
 .terraform/
 # .tfstate files

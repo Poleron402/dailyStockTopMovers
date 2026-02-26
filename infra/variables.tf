@@ -8,3 +8,8 @@ variable "aws_region" {
     description = "The AWS region of the application's user"
     type= string
 }
+
+variable "bucket_name" {
+    description = "Name of the S3 bucket (needs to be unique across all AWS)"
+    type = string
+}
