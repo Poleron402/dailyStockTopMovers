@@ -18,4 +18,5 @@ module "gateway" {
 }
 module "frontend" {
   source = "./modules/frontend"
+  bucket_name = var.bucket_name
 }
