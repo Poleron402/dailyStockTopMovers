@@ -1,5 +1,8 @@
 .PHONY: prepare_save prepare_fetch load_and_plan load_infra load_react
 
+.ONESHELL:
+SHELL := /bin/bash
+
 prepare_save:
 	cd be-save && \
 	rm -rf lambda && \
@@ -22,14 +25,11 @@ load_and_plan:
 
 load_infra:
 	cd infra && \
-	terraform apply
+	terraform apply --auto-approve
 
 load_react:
-	cd infra && \
-	source .env && \
-	cd .. && \
+	source infra/.env && \
 	cd fe && \
 	npm run build && \
 	cd .. && \
-	aws s3 sync fe/dist s3://$(TF_VAR_bucket_name) --acl public-read
-
+	aws s3 sync fe/dist s3://$$TF_VAR_bucket_name --acl public-read
