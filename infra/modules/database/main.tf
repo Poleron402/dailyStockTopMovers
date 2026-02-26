@@ -1,6 +1,6 @@
 # dynamo db setup
 resource "aws_dynamodb_table" "stock_data_table" {
-  name = "StockData"
+  name = var.database_name
   billing_mode = "PROVISIONED"
   read_capacity  = 20
   write_capacity = 5

@@ -1,4 +1,5 @@
 ## Weekly Stock Top Movers
+[Access Website](http://polmejiapennymactest.s3-website-us-west-1.amazonaws.com/)
 A full stack application deployed using serverless data pipeline on [AWS](https://docs.aws.amazon.com/).<br>
 <details>
 <summary>Tools used</summary>
@@ -22,6 +23,7 @@ A full stack application deployed using serverless data pipeline on [AWS](https:
 > - Store the API key in the following fashion: ```export TF_VAR_massive_api_key=YOUR_KEY```
 > #### Other `.env` variables
 > - Store your preferred AWS region as `export TF_VAR_aws_region=your-region`
+> - Store your database name as `export TF_VAR_database_name=your_dbname`
 >- Store your S3 bucket name as `export TF_VAR_bucket_name=your_unique_bucket_name`
 > > [!CAUTION] 
 > > The S3 bucket names must be globally unique across all AWS accounts and all AWS Regions within a given partition.

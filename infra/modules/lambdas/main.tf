@@ -80,6 +80,7 @@ resource "aws_lambda_function" "massive_api_lambda" {
   environment {
     variables = {
       API_KEY = var.massive_api_key
+      DB_NAME=var.database_name
     }
   }
 }
@@ -122,8 +123,12 @@ resource "aws_lambda_function" "api_lambda" {
 
   filename         = data.archive_file.lambda_api_zip.output_path
   source_code_hash = data.archive_file.lambda_api_zip.output_base64sha256
-  timeout = 5
-
+  timeout = 10
+  environment {
+    variables = {
+      DB_NAME=var.database_name
+    }
+  }
 }
 
 

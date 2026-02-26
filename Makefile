@@ -27,6 +27,7 @@ load_and_plan:
 
 load_infra:
 	cd infra && \
+	source .env && \
 	terraform apply --auto-approve
 
 load_react:
