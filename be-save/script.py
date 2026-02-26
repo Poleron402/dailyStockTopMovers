@@ -31,7 +31,6 @@ def lambda_handler(event, context):
     for stock in watchlist:
         try:
             response = requests.get(f"https://api.massive.com/v1/open-close/{stock}/{today}?adjusted=true&apiKey={api_key}")
-            print(f"https://api.massive.com/v1/open-close/{stock}/{today}?adjusted=true&apiKey={api_key}")
             data = response.json()
             print(data)
             if data["status"] != "OK":

@@ -16,11 +16,12 @@ function App() {
   useEffect(()=>{
     const getData = async() =>{
       try {
-        const result = await axios.get("https://zabvgvh4j7.execute-api.us-west-1.amazonaws.com/prod/movers")
+        const result = await axios.get("https://tl087nedfk.execute-api.us-west-1.amazonaws.com/prod/movers")
         if (result) {
           setLoading(false)
           setData(result.data)
         }
+        
       }catch(e) {
         setError("There has been an error with fetching information.")
         console.log(`There has been an error calling the API - ${e}`)
@@ -31,10 +32,11 @@ function App() {
   }, [])
   return (
     <>
-      {!error && (
-        <>
+      
         <h1>Stock Top-Movers</h1>
         <p>Data for the last 7 business days</p>
+        {!error ? (
+        <>
         {!loading && data ?
         (
           <table>
@@ -58,7 +60,12 @@ function App() {
       <SpinnerRoundFilled size="200px" enabled={true} color="#1E90FF"/>
       }
       </>
-      )}
+      
+      )
+    :
+    <>
+    <div id="error">There has been an error fetching weekly data.</div>
+    </>}
       
     </>
   )

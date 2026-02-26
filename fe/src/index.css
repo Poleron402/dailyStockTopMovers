@@ -79,3 +79,10 @@ th{
 .negative_row {
   background-color: rgb(156, 18, 18);
 }
+#error {
+  color: rgb(255, 105, 105);
+  border-radius: 10px;
+  padding: 1em;
+  background-color: rgba(121, 20, 20, 0.445);
+  font-size: 1.5em;
+}

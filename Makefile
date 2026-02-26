@@ -2,6 +2,7 @@
 
 prepare_save:
 	cd be-save && \
+	rm -rf lambda && \
 	mkdir lambda && \
 	cp script.py lambda/script.py && \
 	pip install -r requirements.txt -t lambda/
@@ -9,6 +10,7 @@ prepare_save:
 
 prepare_fetch:
 	cd be-fetch && \
+	rm -rf lambda && \
 	mkdir lambda && \
 	cp script.py lambda/script.py && \
 	pip install -r requirements.txt -t lambda/

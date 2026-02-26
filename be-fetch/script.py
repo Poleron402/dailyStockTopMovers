@@ -8,8 +8,7 @@ def handler(event, context):
     table = dynamodb.Table('StockData')
 
     get_days = 0
-
-
+    
     return_date = []
     while len(return_date)<7:
         try:
