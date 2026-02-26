@@ -1,0 +1,39 @@
+## Weekly Stock Top Movers
+A full stack application deployed using serverless data pipeline on [AWS](https://docs.aws.amazon.com/).<br>
+<details>
+<summary>Tools used</summary>
+
+* <mark>AWS Lambda</mark> *to run database population and retrieval logic*
+* <mark>AWS DynamoDB</mark> *to store stock data*
+* <mark>AWS EventBridge</mark> *to schedule the stock data population lambda*
+* <mark>AWS API Gateway</mark> *to create an API endpoint that triggers database data retrieval function*
+* <mark>AWS S3 bucket</mark> *to serve the React frontend*
+* <mark>Python</mark> *the language in which lambda functions are written*
+* <mark>React</mark> *for frontend*
+</details>
+
+>### Setup Prerequisites
+>#### Aws CLI
+>- Install AWS CLI on the OS by following [these instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+>- Run `aws configure` and follow the prompt to authenticate yourself. This will allow you to work with AWS from the terminal.
+>#### Massive API key
+> - Create a .env file in the `infra/` directory. 
+> - Create a free API key on [massive.com](https://massive.com/).
+> - Store the API key in the following fashion: ```export TF_VAR_massive_api_key=YOUR_KEY```
+> #### Other `.env` variables
+> - Store your preferred AWS region as `export TF_VAR_aws_region=your-region`
+>- Store your S3 bucket name as `export TF_VAR_bucket_name=your_unique_bucket_name`
+> > [!CAUTION] 
+> > The S3 bucket names must be globally unique across all AWS accounts and all AWS Regions within a given partition.
+
+>### How to run and load the infrastructure
+>A [Makefile](https://github.com/Poleron402/dailyStockTopMovers/blob/main/Makefile) was created to consolidate commands and save time. Ensure [make](https://man7.org/linux/man-pages/man1/make.1.html) is installed on your system. If on Windows, consider using WSL. <br>
+>-- Prepare `be-save` for deployment by running `make prepare_save`.<br>
+>-- Prepare `be-fetch` for deployment by running `make prepare_fetch`.<br>
+>⬆️ These two commands create a subdirectory called **lambda/** and install the required python modules into that subdirectory. This makes it easier for Terraform to zip the code with all the dependencies.<br>
+>-- Load all the environment variables and check the planned changes by running `make load_and_plan`.<br>
+>-- Apply the changes by running `make load_infra`. This auto approves all the changes, and therefore is not suggested. Consider changing into `infra/` directory and running `terraform apply` to review and approve infrastructure changes. <br>
+>-- Build the React application (which will generate a `dist/` folder) and sync (recursively copy the files) the `dist/` folder with the s3 bucket instance.
+
+## Tradeoffs
+The main tradeoffs 

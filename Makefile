@@ -3,6 +3,7 @@
 .ONESHELL:
 SHELL := /bin/bash
 
+# Prepare `be-save` for deployment by running
 prepare_save:
 	cd be-save && \
 	rm -rf lambda && \
@@ -10,7 +11,7 @@ prepare_save:
 	cp script.py lambda/script.py && \
 	pip install -r requirements.txt -t lambda/
 
-
+# Prepare `be-fetch` for deployment by running
 prepare_fetch:
 	cd be-fetch && \
 	rm -rf lambda && \
@@ -18,6 +19,7 @@ prepare_fetch:
 	cp script.py lambda/script.py && \
 	pip install -r requirements.txt -t lambda/
 
+# Load all the environment variables and check the planned changes by running
 load_and_plan:
 	cd infra && \
 	source .env && \
