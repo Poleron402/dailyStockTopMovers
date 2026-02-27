@@ -1,11 +1,12 @@
 import boto3
 from datetime import date, timedelta
 import json
+import os
 from decimal import Decimal
 
 def handler(event, context):
     dynamodb = boto3.resource('dynamodb', region_name='us-west-1')
-    table = dynamodb.Table('StockData')
+    table = dynamodb.Table(os.environ.get("DB_NAME"))
 
     get_days = 0
     

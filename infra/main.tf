@@ -5,11 +5,13 @@ provider "aws" {
 
 module "database" {
   source = "./modules/database"
+  database_name=var.database_name
 }
 module "lambdas" {
   source = "./modules/lambdas"
   massive_api_key = var.massive_api_key
   stock_table_arn = module.database.stock_table_arn
+  database_name=var.database_name
 }
 module "gateway" {
   source = "./modules/gateway"

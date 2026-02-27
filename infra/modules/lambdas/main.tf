@@ -1,4 +1,5 @@
 # Lambda for fetching api data and storing in dynamo
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -21,12 +22,17 @@ resource "aws_iam_role" "iamrole" {
 resource "aws_cloudwatch_event_rule" "get_daily_stock" {
   name = "get_daily_stock"
   description = "Triggers the lambda function every day besides SUN and MON for the past day to get the stock data. API limitations do not permit same day data retrieval, therefore the date is shifted."
-  schedule_expression = "cron(10 7 ? * MON-FRI *)"
+  schedule_expression = "cron(5 6 ? * MON-FRI *)"
 }
 resource "aws_cloudwatch_event_target" "lambda_target" {
   rule      = aws_cloudwatch_event_rule.get_daily_stock.name
   target_id = "SendToLambda"
   arn       = aws_lambda_function.massive_api_lambda.arn
+
+  retry_policy {
+    maximum_retry_attempts = 5
+    maximum_event_age_in_seconds = 3600
+  }
 }
 resource "aws_lambda_permission" "allow_eventbridge" {
   statement_id  = "AllowExecutionFromEventBridge"
@@ -80,6 +86,7 @@ resource "aws_lambda_function" "massive_api_lambda" {
   environment {
     variables = {
       API_KEY = var.massive_api_key
+      DB_NAME=var.database_name
     }
   }
 }
@@ -122,8 +129,12 @@ resource "aws_lambda_function" "api_lambda" {
 
   filename         = data.archive_file.lambda_api_zip.output_path
   source_code_hash = data.archive_file.lambda_api_zip.output_base64sha256
-  timeout = 5
-
+  timeout = 10
+  environment {
+    variables = {
+      DB_NAME=var.database_name
+    }
+  }
 }
 
 

@@ -55,7 +55,7 @@ def lambda_handler(event, context):
     winner = json.loads(json.dumps(winner), parse_float=Decimal)
     # dynamo db connection
     dynamodb = boto3.resource('dynamodb', region_name='us-west-1')
-    table = dynamodb.Table('StockData')
+    table = dynamodb.Table(os.environ.get("DB_NAME"))
 
     db_response = table.put_item(
         Item=winner
