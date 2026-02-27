@@ -13,8 +13,8 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-resource "aws_iam_role" "iamrole" {
-  name               = "lambda_execution_role"
+resource "aws_iam_role" "save_role" {
+  name               = "lambda_save_execution_role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -62,7 +62,7 @@ resource "aws_iam_policy" "dynamoDBLambdaPolicy" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda-policy-attachment" {
-  role       = aws_iam_role.iamrole.name
+  role       = aws_iam_role.save_role.name
   policy_arn = aws_iam_policy.dynamoDBLambdaPolicy.arn
 }
 
@@ -77,7 +77,7 @@ data "archive_file" "lambda_zip" {
 resource "aws_lambda_function" "massive_api_lambda" {
   function_name    = "getStockData"
   runtime          = "python3.12"
-  role             = aws_iam_role.iamrole.arn
+  role             = aws_iam_role.save_role.arn
   handler          = "script.lambda_handler"
 
   filename         = data.archive_file.lambda_zip.output_path
@@ -93,6 +93,12 @@ resource "aws_lambda_function" "massive_api_lambda" {
 
 
 # Lambda for fetching api data from dynamo and returning it in json form
+
+resource "aws_iam_role" "fetch_role" {
+  name               = "lambda_fetch_execution_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
 resource "aws_iam_policy" "dynamoDBLambdaPolicyGet" {
   name = "DynamoDBLambdaPolicyGet"
 
@@ -118,13 +124,13 @@ data "archive_file" "lambda_api_zip" {
   output_path = "lambda-one.zip"
 }
 resource "aws_iam_role_policy_attachment" "lambda-policy-attachment-get" {
-  role       = aws_iam_role.iamrole.name
+  role       = aws_iam_role.fetch_role.name
   policy_arn = aws_iam_policy.dynamoDBLambdaPolicyGet.arn
 }
 resource "aws_lambda_function" "api_lambda" {
   function_name    = "fetchStockData"
   runtime          = "python3.12"
-  role             = aws_iam_role.iamrole.arn
+  role             = aws_iam_role.fetch_role.arn
   handler          = "script.handler"
 
   filename         = data.archive_file.lambda_api_zip.output_path
