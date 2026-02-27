@@ -32,6 +32,7 @@ A full stack application deployed using serverless data pipeline on [AWS](https:
 
 >### How to run and load the infrastructure
 >A [Makefile](https://github.com/Poleron402/dailyStockTopMovers/blob/main/Makefile) was created to consolidate commands and save time. Ensure [make](https://man7.org/linux/man-pages/man1/make.1.html) is installed on your system. If on Windows, consider using WSL. <br>
+>-- Under `infra/` directory, run `terraform init`.
 >-- Prepare `be-save` for deployment by running `make prepare_save`.<br>
 >-- Prepare `be-fetch` for deployment by running `make prepare_fetch`.<br>
 >⬆️ These two commands create a subdirectory called **lambda/** and install the required python modules into that subdirectory. This makes it easier for Terraform to zip the code with all the dependencies.<br>
@@ -44,7 +45,7 @@ A full stack application deployed using serverless data pipeline on [AWS](https:
 The main tradeoffs were done due to free API tier limitations.
 <details>
 <summary>Tradeoff #1</summary>
-Massive API only allows 5 requests per minute. The response does not return any indicator of how long the cooldown is, so the lambda that fetches stock data calls `time.sleep(11)`, which stops the program for 11 seconds before calling again (we have 6 tickers to call)
+Massive API only allows 5 requests per minute. The response does not return any indicator of how long the cooldown is, so the lambda that fetches stock data calls `time.sleep(12)`, which stops the program for 12 seconds before calling again (we have 6 tickers to call)
 </details>
 <details>
 <summary>Tradeoff #2</summary>
@@ -57,4 +58,11 @@ Not related to the API, but had issue finding a way to inject API Gateway endpoi
 
 
 ## Challenges
-The main challenges included not being faniliar with Terraform, and having limited experience with DynamoDB. 
+The main initial challenges included not being faniliar with Terraform. Therefore, it took some additional time in the beginning to familiarize myself with the tool. This project was a great introduction to the services! <br>
+The main **performance** challenge is in the way DynamoDB database is set up. I was planning on creating a sorting key, so that retrieval by date is more efficient, however, I ran into an issue and settled on the regular search by date rather than fetching several responses for the last 7 days.
+
+## Needed Improvements
+* Since the istructions specified not accruing the cost for the project, I did not get a custom domain for the web page. Without a custom domain, I cannot enable SSL/TLS certificates to make the webpage more secure.
+* Error handling. If the stock API fails, the EventBridge reruns it up to five times. The rate limiting per minute is mitigated with `time.sleep(12)`
+* Currently, if the database has fewer than 7 entries, API Gateway will timeout and return an error, instead of returning partial data.
+

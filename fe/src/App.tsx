@@ -17,11 +17,12 @@ function App() {
     const getData = async() =>{
       try {
         const result = await axios.get("https://tl087nedfk.execute-api.us-west-1.amazonaws.com/prod/movers")
-        if (result) {
+        if (result && result.status==200) {
           setLoading(false)
           setData(result.data)
+        }else{
+          setError(`There has been an error with fetching information. - ${result.data.message}`)
         }
-        
       }catch(e) {
         setError("There has been an error with fetching information.")
         console.log(`There has been an error calling the API - ${e}`)
