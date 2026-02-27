@@ -36,6 +36,23 @@ A full stack application deployed using serverless data pipeline on [AWS](https:
 >-- Load all the environment variables and check the planned changes by running `make load_and_plan`.<br>
 >-- Apply the changes by running `make load_infra`. This auto approves all the changes, and therefore is not suggested. Consider changing into `infra/` directory and running `terraform apply` to review and approve infrastructure changes. <br>
 >-- Build the React application (which will generate a `dist/` folder) and sync (recursively copy the files) the `dist/` folder with the s3 bucket instance.
+>-- Lastly, retrieve the URL for created s3 bucket, and manually paste it into the frontend code under `fe/src/App.tsx` line 19.
 
 ## Tradeoffs
-The main tradeoffs 
+The main tradeoffs were done due to free API tier limitations.
+<details>
+<summary>Tradeoff #1</summary>
+Massive API only allows 5 requests per minute. The response does not return any indicator of how long the cooldown is, so the lambda that fetches stock data calls `time.sleep(11)`, which stops the program for 11 seconds before calling again (we have 6 tickers to call)
+</details>
+<details>
+<summary>Tradeoff #2</summary>
+Massive API returns daily stock summary later in the evening, and the documentation is not clear or consistent as to when that time is. Therefore, the database is updated everyday at 22:05 PST.
+</details>
+<details>
+<summary>Tradeoff #3</summary>
+Not related to the API, but had issue finding a way to inject API Gateway endpoint into the frontend. Therefore, in the instructions, it is said to populate it manually.
+</details>
+
+
+## Challenges
+The main challenges included not being faniliar with Terraform, and having limited experience with DynamoDB. 
