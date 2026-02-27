@@ -12,6 +12,8 @@ A full stack application deployed using serverless data pipeline on [AWS](https:
 * <mark>Python</mark> *the language in which lambda functions are written*
 * <mark>React</mark> *for frontend*
 </details>
+<img width="2111" height="1040" alt="image" src="https://github.com/user-attachments/assets/93b85b6f-b403-49b5-89fc-b9a07b510f2a" />
+
 
 >### Setup Prerequisites
 >#### Aws CLI
