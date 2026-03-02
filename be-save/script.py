@@ -20,7 +20,7 @@ def lambda_handler(event, context):
     watchlist = ["AAPL","MSFT","GOOGL","AMZN","TSLA","NVDA"]
 
     # today's date
-    today = str(date.today()-timedelta(days=1))
+    today = str(date.today())
 
     # to check the winner
     highest_change = 0
